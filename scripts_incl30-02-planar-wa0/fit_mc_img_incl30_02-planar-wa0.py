@@ -18,12 +18,12 @@ args = parser.parse_args()
 #*********************
 foldername = 'Linas_cubes/fits-and-analysis/incl30_02-planar-w0'
 diskname = 'image_lines_incl30_02-planar-wa0_mod_noisy_convolved'
-file_data = f'../image_lines_incl30_02-planar-wa0_mod_noisy_convolved_clipped_downsamp_8pix.fits'
+file_data = f'./image_lines_incl30_02-planar-wa0_mod_noisy_convolved_clipped_downsamp_8pix.fits'
 tag_out = 'synthcube_12co_incl30-02-planar-wa0_mod' #PREFERRED FORMAT: disc_mol_chan_program_extratags
 tag_in = tag_out
 
-nwalkers = 256
-nsteps = 36000
+nwalkers = 230
+nsteps = 2000
 
 dpc = 150.*u.pc
 au_to_m = u.au.to('m')
@@ -120,24 +120,24 @@ xc = 0.0
 yc = 0.0
 
 # intensity
-I0 = 0.006 # norm. cte, Jy/beam
-p = -1.5 # R-power
-q = 1.5 # z-power
+I0 = 0.005 # norm. cte, Jy/beam
+p = -0.5 # R-power
+q = 0.5 # z-power
 # Rbreak = 100. # radius for powerlaw break, default is 100 au
-Rout = 400 # extend of the disk, au
+Rout = 350 # extend of the disk, au
 
 # line width
 L0 = 0.25 # norm. cte, km/s
-pL = -0.4 # R-power
-qL = -0.4 # z-power
+pL = -1.0 # R-power
+qL = 0.5 # z-power
 
 # line slope
 Ls = 2.0 # norm. cte, Jy/pix per km/s (? check this) 
 pLs = 0.3 # R-power
 
 # emission surface params
-z0_upper, p_upper, Rb_upper, q_upper = 46.9, 1.175, 280.9, 6.358 # norm. cte, R-power1 (flare), taper point radius, R-power2 (exp. taper); au
-z0_lower, p_lower, Rb_lower, q_lower = 40, 1.10, 280.9, 6.358 # same definition as upper surface
+z0_upper, p_upper, Rb_upper, q_upper = 30, 1.0, 300, 3.0 # norm. cte, R-power1 (flare), taper point radius, R-power2 (exp. taper); au
+z0_lower, p_lower, Rb_lower, q_lower = 20, 1.0, 300, 3.0 # same definition as upper surface
 
 p0 = [Mstar, vsys,                              #Velocity
       PA, xc, yc,                         #Orientation
@@ -177,8 +177,8 @@ model.mc_params['height_lower'] = {'z0': True, 'p': True, 'Rb': True, 'q': True}
 # explicitly defining all parameter ranges
 model.mc_boundaries['velocity']['vsys'] = (-3, 3)
 model.mc_boundaries['orientation']['incl'] = (-1.2, 1.2)
-model.mc_boundaries['intensity']['I0'] = (0.0, 0.6)
-model.mc_boundaries['intensity']['Rout'] = (0, 550)
+model.mc_boundaries['intensity']['I0'] = (0.0, 0.05)
+model.mc_boundaries['intensity']['Rout'] = (0, 500)
 model.mc_boundaries['intensity']['p'] = (-5.0, 5.0)
 model.mc_boundaries['intensity']['q'] = (0, 5.0)
 model.mc_boundaries['linewidth']['L0'] = (0.005, 5.0)
@@ -187,13 +187,13 @@ model.mc_boundaries['linewidth']['q'] = (-5.0, 5.0)
 model.mc_boundaries['lineslope']['Ls'] = (0.005, 20)
 model.mc_boundaries['lineslope']['p'] = (-5.0, 5.0)
 model.mc_boundaries['lineslope']['q'] = (-5.0, 5.0)
-model.mc_boundaries['height_upper']['z0'] = (0, 600)
+model.mc_boundaries['height_upper']['z0'] = (0, 100)
 model.mc_boundaries['height_upper']['p'] = (0, 5)
-model.mc_boundaries['height_upper']['Rb'] = (0, 400)
+model.mc_boundaries['height_upper']['Rb'] = (0, 500)
 model.mc_boundaries['height_upper']['q'] = (0, 15)
-model.mc_boundaries['height_lower']['z0'] = (0, 600)
+model.mc_boundaries['height_lower']['z0'] = (0, 100)
 model.mc_boundaries['height_lower']['p'] = (0, 5)
-model.mc_boundaries['height_lower']['Rb'] = (0, 400)
+model.mc_boundaries['height_lower']['Rb'] = (0, 500)
 model.mc_boundaries['height_lower']['q'] = (0, 15)
 # include lne width here, and om==p, q of intensity (as above) and modify this in the protofile.
 
@@ -250,34 +250,34 @@ modelcube.show_side_by_side(datacube, int_unit='Intensity [K]', show_beam=True, 
 #********
 # Set up the emcee backend
 # saves the stuff here
-if __name__ == '__main__': # this fixes a weird bug. Indent is important.
-    filename = "backend_%s.h5"%tag_out
-    backend = None
+#if __name__ == '__main__': # this fixes a weird bug. Indent is important.
+filename = "backend_%s.h5"%tag_out
+backend = None
 
-    #try and except statement failing with FileNotFoundError/OSError
-    if args.backend:
-        #Succesive runs
-        backend = emcee.backends.HDFBackend(filename)
-    else:
-        #First run: Initialise backend
-        backend = emcee.backends.HDFBackend(filename)
-        backend.reset(nwalkers, len(p0))
+#try and except statement failing with FileNotFoundError/OSError
+if args.backend:
+    #Succesive runs
+    backend = emcee.backends.HDFBackend(filename)
+else:
+    #First run: Initialise backend
+    backend = emcee.backends.HDFBackend(filename)
+    backend.reset(nwalkers, len(p0))
 
-        print("Backend Initial size: {0} steps".format(backend.iteration))
+print("Backend Initial size: {0} steps".format(backend.iteration))
+
+# Noise in each pixel is stddev of intensity from first and last 5 channels 
+noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
         
-        # Noise in each pixel is stddev of intensity from first and last 5 channels 
-        noise = np.std( np.append(datacube.data[:5,:,:], datacube.data[-5:,:,:], axis=0), axis=0) 
-        
-        #Run Emcee - the actual fitting
-        model.run_mcmc(datacube.data, vchannels,
+#Run Emcee - the actual fitting
+model.run_mcmc(datacube.data, vchannels,
                p0_mean=p0, nwalkers=nwalkers, nsteps=nsteps,
                backend=backend,
                tag=tag_out,
-               nthreads=86, # If not specified considers maximum possible number of cores
+               #nthreads=86, # If not specified considers maximum possible number of cores
                frac_stats=0.1, # analogous to the burnin time, chooses which part to take for the corner plot
                frac_stddev=1e-3, # estimates stdev 
                noise_stddev=noise) 
 
-        print("Backend Final size: {0} steps".format(backend.iteration))
+print("Backend Final size: {0} steps".format(backend.iteration))
 
 
