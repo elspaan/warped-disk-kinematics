@@ -1,0 +1,129 @@
+{
+    "custom": {
+        "chan_step": 2,
+        "nchans": 15,
+        "vlim": 0.3,
+        "Llim": 0.2,
+        "Lslim": 1.5,
+        "Ilim": 12,
+        "gaps": [],
+        "rings": [
+            0
+        ],
+        "kinks": []
+    },
+    "metadata": {
+        "dir_data": "./",
+        "dir_model": "./",
+        "file_data": "./image_lines_incl30_02-twisted-wa5-twist0_mod_noisy_convolved_clipped_downsamp_2pix.fits",
+        "prepare_script": "prepare_data.py",
+        "log_file": "./log_pars_synthcube_12co_incl30-02-twisted-wa5-twist0_mod_cube_256walkers_25644steps.txt",
+        "tag": "synthcube_12co_incl30-02-twisted-wa5-twist0_mod",
+        "disc": "incl30wa5",
+        "mol": "12co",
+        "dpc": 150.0,
+        "dv": "incl30-02-twisted-wa5-twist0",
+        "program": "mod",
+        "kind": [
+            "allfree"
+        ],
+        "nwalkers": 256,
+        "nsteps": 25644,
+        "downsamp_pro": 2,
+        "downsamp_fit": 8,
+        "downsamp_factor": 16.0,
+        "v_discminer": "0.4.25"
+    },
+    "best_fit": {
+        "velocity": {
+            "Mstar": 1.069792,
+            "vel_sign": -1.0,
+            "vsys": 0.002401
+        },
+        "orientation": {
+            "incl": -0.524,
+            "PA": -0.014475,
+            "xc": 0.850429,
+            "yc": -5.943546
+        },
+        "intensity": {
+            "I0": 0.040152,
+            "p": -2.994891,
+            "q": 2.546163,
+            "Rout": 279.139716
+        },
+        "linewidth": {
+            "L0": 0.716897,
+            "p": -1.326462,
+            "q": 0.890983
+        },
+        "lineslope": {
+            "Ls": 2.757366,
+            "p": 0.25339,
+            "q": 0.0
+        },
+        "height_upper": {
+            "z0": 31.188283,
+            "p": 1.127877,
+            "Rb": 304.684271,
+            "q": 8.327452
+        },
+        "height_lower": {
+            "z0": 25.251346,
+            "p": 1.209445,
+            "Rb": 289.502061,
+            "q": 13.781575
+        },
+        "beam": {
+            "bmaj": 0.0,
+            "bmin": 0.0,
+            "bpa": 0.0
+        }
+    },
+    "units": {
+        "velocity": {
+            "Mstar": "Msun",
+            "vel_sign": "none",
+            "vsys": "km/s"
+        },
+        "orientation": {
+            "incl": "rad",
+            "PA": "rad",
+            "xc": "au",
+            "yc": "au"
+        },
+        "intensity": {
+            "I0": "Jy/pix",
+            "p": "none",
+            "q": "none",
+            "Rout": "au"
+        },
+        "linewidth": {
+            "L0": "km/s",
+            "p": "none",
+            "q": "none"
+        },
+        "lineslope": {
+            "Ls": "none",
+            "p": "none",
+            "q": "none"
+        },
+        "height_upper": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        },
+        "height_lower": {
+            "z0": "au",
+            "p": "none",
+            "Rb": "au",
+            "q": "none"
+        },
+        "beam": {
+            "bmaj": "arcsec",
+            "bmin": "arcsec",
+            "bpa": "none"
+        }
+    }
+}
